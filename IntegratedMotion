@@ -1,0 +1,101 @@
+// Code is set to change, still in prototyping phase
+# include <Servo.h>
+
+Servo myServo;
+Servo smallServo;
+Servo bigServo;
+const int servoPin = 9;
+const int smallservoPin = 2;
+const int bigservoPin = 1;
+
+// Buttons
+const int greenButton = 5; // Pin for green button
+const int redButton = 6;   // Pin for red button
+const int yellowButton = 7; // Pin for yellow button
+const int blueButton = 8; // Pin for blue button
+const int blackButton = 10; 
+const int backblackButton = 11;
+const int Button = 12;
+const int otherButton = 13;
+const int dirPin = 4; // Direction pin for stepper motor
+const int stepPin = 3; // Step pin for stepper motor
+const int stepsToMove = 20400; 
+
+void setup() {
+  // put your setup code here, to run once:
+    myServo.attach(servoPin); // Attach the servo to the pin
+    smallServo.attach(smallservoPin);
+    bigServo.attach(bigservoPin);
+    pinMode(greenButton, INPUT);
+    pinMode(redButton, INPUT);
+    pinMode(yellowButton, INPUT);
+    pinMode(dirPin, OUTPUT);
+    pinMode(stepPin, OUTPUT);
+}
+
+void loop() {
+    if (digitalRead(greenButton) == HIGH) { // Move forward full revolution when green button is pressed once
+        digitalWrite(dirPin, HIGH);
+        for (int i = 0; i < stepsToMove; i++) {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(400);
+        }
+        delay(50); // Small delay to prevent accidental multiple triggers
+    }
+    
+    if (digitalRead(redButton) == HIGH) { // Move backward full revolution when red button is pressed once
+        digitalWrite(dirPin, LOW);
+        for (int i = 0; i < stepsToMove; i++) {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(400);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(400);
+        }
+        delay(50);
+    }
+    
+    if (digitalRead(yellowButton) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        myServo.write(170);
+        delay(1750);
+        myServo.write(90);
+        delay(100);
+    }
+
+    if (digitalRead(blueButton) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        myServo.write(20);
+        delay(1750);
+        myServo.write(90);
+        delay(100);
+    }
+
+    if (digitalRead(blackButton) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        smallServo.write(100);
+        delay(1750);
+        smallServo.write(90);
+        delay(100);
+    }
+
+    if (digitalRead(backblackButton) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        smallServo.write(80);
+        delay(1250);
+        smallServo.write(90);
+        delay(100);
+    }
+
+    if (digitalRead(Button) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        bigServo.write(140);
+        delay(1250);
+        bigServo.write(90);
+        delay(100);
+    }
+
+    if (digitalRead(otherButton) == HIGH) { // Rotate servo in previous direction when yellow button is pressed once
+        bigServo.write(80);
+        delay(1750);
+        bigServo.write(90);
+        delay(100);
+    }
+
+}
