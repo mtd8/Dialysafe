@@ -1,0 +1,132 @@
+# include <Servo.h>
+
+Servo smallServo;
+Servo ArmServo;
+Servo myServo;
+const int smallservoPin = 12;
+const int armservoPin = 11;
+const int servoPin = 13;
+
+#define dirPin 3
+#define stepPin 4
+#define stepsPerRevolution 128 
+#define dirPinLong 9
+#define stepPinLong 8
+#define stepsPerRevolutionLong 630
+
+const int startbutton = 6;
+const int resetbutton = 7;
+
+void setup() {
+  // put your setup code here, to run once:
+
+  smallServo.attach(smallservoPin); // Servo on arm
+  ArmServo.attach(armservoPin); // Servo on small linear rail
+
+  // Small Linear Rail
+  pinMode(stepPin, OUTPUT); 
+  pinMode(dirPin, OUTPUT); 
+
+  // Long Linear Rail
+  pinMode(stepPinLong, OUTPUT);
+  pinMode(dirPinLong, OUTPUT); 
+
+  myServo.attach(servoPin); // Servo on long linear rail
+
+  pinMode(startbutton, INPUT);
+  pinMode(resetbutton, INPUT);
+  ArmServo.write(40);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  if (digitalRead(startbutton) == HIGH) {
+    ArmServo.write(40);
+    delay(1000);
+    smallServo.write(50);
+    delay(3500);
+    smallServo.write(90);
+    delay(1000);
+    delay(1000);
+
+    // SMALL LINEAR RAIL
+    digitalWrite(dirPin, LOW);
+    int revolutions = 0;
+    while (revolutions < 40){
+    // Spin the stepper motor 1 revolution slowly:
+      for (int i = 0; i < stepsPerRevolution; i++) {
+        digitalWrite(stepPin, HIGH);
+        delayMicroseconds(750);
+        digitalWrite(stepPin, LOW);
+        delayMicroseconds(750);
+      }
+      revolutions++;
+    }
+    delay(3000);
+    ArmServo.write(130);
+
+    delay(1000);
+  
+
+    digitalWrite(dirPinLong, LOW);
+
+    int revolutions2 = 0;
+    while (revolutions2 < 40){
+      for (int i = 0; i < stepsPerRevolutionLong; i++) {
+        // These four lines result in 1 step:
+        digitalWrite(stepPinLong, HIGH);
+        delayMicroseconds(750);
+        digitalWrite(stepPinLong, LOW);
+        delayMicroseconds(750);
+      }
+      revolutions2++;
+    }
+
+    delay(1500);
+
+    // Screw in tube
+    myServo.write(150);
+    delay(1800);
+    myServo.write(90);
+    delay(100);
+  }
+
+
+  if (digitalRead(resetbutton) == HIGH) {
+    // Screw in tube
+    digitalWrite(dirPinLong, HIGH);
+
+    int revolutions2 = 0;
+    while (revolutions2 < 40){
+      for (int i = 0; i < stepsPerRevolutionLong; i++) {
+        // These four lines result in 1 step:
+        digitalWrite(stepPinLong, HIGH);
+        delayMicroseconds(750);
+        digitalWrite(stepPinLong, LOW);
+        delayMicroseconds(750);
+      }
+      revolutions2++;
+    }
+
+  // SMALL LINEAR RAIL
+    digitalWrite(dirPin, HIGH);
+    int revolutions = 0;
+    while (revolutions < 40){
+    // Spin the stepper motor 1 revolution slowly:
+      for (int i = 0; i < stepsPerRevolution; i++) {
+        digitalWrite(stepPin, HIGH);
+        delayMicroseconds(750);
+        digitalWrite(stepPin, LOW);
+        delayMicroseconds(750);
+      }
+      revolutions++;
+    }
+    delay(3000);
+    
+    ArmServo.write(40);
+    
+  }
+
+}
